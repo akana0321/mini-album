@@ -14,5 +14,5 @@ public interface BoardDao {
   public Board selectByBno(int bno);
   public int insert(Board board);
   public int deleteByBno(int bno);
-  public int update(Board board);
+  public int update(Board board); 
 }
