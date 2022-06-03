@@ -1,16 +1,38 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.mycompany.backend.dao.MemberDao">
-	<insert id="insert" parameterType="member">
-		INSERT INTO member 
-		(mid, mname, mpassword, menabled, mrole, memail) 
-		VALUES(#{mid}, #{mname}, #{mpassword}, #{menabled}, #{mrole}, #{memail})
+<mapper namespace="com.mycompany.mini_album.dao.ImagesDao">
+	<select id="selectByBno" parameterType="int" resultType="images">
+		SELECT ino, bno, ioname, isname, itype
+		FROM images
+		WHERE bno=#{bno}
+	</select>
+	
+	<select id="selectOneByIno" parameterType="int" resultType="images">
+		SELECT ino, bno, ioname, isname, itype
+		FROM images
+		WHERE ino=#{ino}
+	</select>
+	
+	<select id="countByBno" parameterType="int" resultType="int">
+		SELECT count(*) FROM images WHERE bno=#{bno}
+	</select>
+	
+	<insert id="insert" parameterType="images">
+		<selectKey order="BEFORE" resultType="int" keyProperty="ino">
+			SELECT SEQ_IMAGES_INO.nextval FROM dual
+		</selectKey>
+		INSERT INTO images 
+		(ino, bno, ioname, isname, itype)
+		VALUES
+		(#{ino}, #{bno}, #{ioname}, #{isname}, #{itype})
 	</insert>
 	
-	<select id="selectByMid" parameterType="string" resultType="member">
-		SELECT mid, mname, mpassword, menabled, mrole, memail
-		FROM member
-		WHERE mid=#{mid}
-	</select>
+	<delete id="deleteAllbyBno" parameterType="int">
+		DELETE FROM images WHERE bno=#{bno}
+	</delete>
+	
+	<delete id="deleteOneByIno" parameterType="int">
+		DELETE FROM board WHERE ino=#{ino}
+	</delete>
 </mapper> 

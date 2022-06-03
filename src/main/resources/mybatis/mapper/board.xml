@@ -1,14 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.mycompany.backend.dao.BoardDao">
-	<select id="selectByPage" parameterType="pager" resultType="board">
-		SELECT rnum, bno, btitle, bdate, mid
+<mapper namespace="com.mycompany.mini_album.dao.BoardDao">
+	<resultMap id="boardWithImages" type="board">
+		<result column="bno" property="bno"/>
+		<result column="mid" property="mid"/>
+		<result column="cname" property="cname"/>
+		<result column="btitle" property="btitle"/>
+		<result column="bcontent" property="bcontent"/>
+		<result column="bdate" property="bdate"/>
+	
+		<collection property="bimages" javaType="ArrayList" ofType="images">
+			<result column="ino" property="ino"/>
+			<result column="bno" property="bno"/>
+			<result column="ioname" property="ioname"/>
+			<result column="isname" property="isname"/>
+			<result column="itype" property="itype"/>
+		</collection>
+	</resultMap>
+
+	<select id="selectByPage" parameterType="pager" resultMap="boardWithImages">
+		SELECT rnum, bno, mid, cname, btitle, bcontent, bdate,
+			   ino, ioname, isname, itype
 		FROM (
-		  SELECT ROWNUM as rnum, bno, btitle, bdate, mid
+		  SELECT ROWNUM as rnum, bno, mid, cname, btitle, bcontent, bdate,
+			   	 ino, ioname, isname, itype
 		  FROM (
-		    SELECT bno, btitle, bdate, mid, bhitcount 
-		    FROM board
+		    SELECT b.bno, mid, cname, btitle, bcontent, bdate,
+			   	   ino, ioname, isname, itype
+		    FROM board b
+            LEFT OUTER JOIN images i ON i.bno = b.bno
+		    WHERE b.mid = #{mid}
+		    ORDER BY bno DESC
+		  )
+		  WHERE rownum &lt;= #{endRowNo}  
+		)
+		WHERE rnum &gt;= #{startRowNo}
+	</select>
+	
+	<select id="selectByPageWithCategory" parameterType="pager" resultMap="boardWithImages">
+		SELECT rnum, bno, mid, cname, btitle, bcontent, bdate,
+			   ino, ioname, isname, itype
+		FROM (
+		  SELECT ROWNUM as rnum, bno, mid, cname, btitle, bcontent, bdate,
+			   	 ino, ioname, isname, itype
+		  FROM (
+		    SELECT b.bno, mid, cname, btitle, bcontent, bdate,
+			   	   ino, ioname, isname, itype
+		    FROM board b
+            LEFT OUTER JOIN images i ON i.bno = b.bno
+		    WHERE b.mid = #{mid}
+		      AND b.cname = #{cname}
 		    ORDER BY bno DESC
 		  )
 		  WHERE rownum &lt;= #{endRowNo}  
@@ -20,28 +62,23 @@
 		SELECT count(*) FROM board
 	</select>
 	
-	<select id="selectByBno" parameterType="int" resultType="board">
-		SELECT bno, btitle, bcontent, bdate, mid, battachoname, battachsname, battachtype 
-		FROM board 
-		WHERE bno=#{bno}
+	<select id="selectByBno" parameterType="int" resultMap="boardWithImages">
+		SELECT b.bno, b.mid, b.cname, b.btitle, b.bcontent, b.bdate,
+			   i.ino, i.ioname, i.isname, i.itype 
+		FROM board b
+		LEFT OUTER JOIN images i ON i.bno = b.bno
+		WHERE b.bno=#{bno}
+		  AND b.bno = i.bno
 	</select>
 	
 	<insert id="insert" parameterType="board">
 		<selectKey order="BEFORE" resultType="int" keyProperty="bno">
-			SELECT SEQ_BNO.nextval FROM dual
+			SELECT SEQ_BOARD_BNO.nextval FROM dual
 		</selectKey>
-		<if test="battachoname == null">
-			INSERT INTO board 
-			(bno, btitle, bcontent, mid, bdate)
-			VALUES
-			(#{bno}, #{btitle}, #{bcontent}, #{mid}, SYSDATE)
-		</if>
-		<if test="battachoname != null">
-			INSERT INTO board 
-			(bno, btitle, bcontent, mid, bdate, bhitcount, battachoname, battachsname, battachtype)
-			VALUES 
-			(#{bno}, #{btitle}, #{bcontent}, #{mid}, sysdate, 0, #{battachoname}, #{battachsname}, #{battachtype})
-		</if>
+		INSERT INTO board 
+		(bno, mid, cname, btitle, bcontent, bdate)
+		VALUES
+		(#{bno}, #{mid}, #{cname}, #{btitle}, #{bcontent}, SYSDATE)
 	</insert>	
 	
 	<delete id="deleteByBno" parameterType="int">
@@ -49,23 +86,12 @@
 	</delete>
 	
 	<update id="update" parameterType="board">
-		<if test="battachoname == null">
-			UPDATE board SET 
-				btitle=#{btitle}, 
-				bcontent=#{bcontent},
-				bdate=sysdate
-			WHERE bno=#{bno}
-		</if>
-		<if test="battachoname != null">
-			UPDATE board SET 
-				btitle=#{btitle}, 
-				bcontent=#{bcontent},
-				bdate=sysdate,
-				battachoname=#{battachoname},
-				battachsname=#{battachsname},
-				battachtype=#{battachtype}
-			WHERE bno=#{bno}
-		</if>
+		UPDATE board SET 
+			btitle=#{btitle}, 
+			cname=#{cname},
+			bcontent=#{bcontent},
+			bdate=sysdate
+		WHERE bno=#{bno}
 	</update>
 </mapper>
 

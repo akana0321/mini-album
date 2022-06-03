@@ -9,9 +9,10 @@ import lombok.Data;
 public class Board {
   private int bno;
   private String mid;
+  private String cname;
   private String btitle;
   private String bcontent;
   private Date bdate;
   
-  public List<Images> images;
+  public List<Images> bimages;
 }

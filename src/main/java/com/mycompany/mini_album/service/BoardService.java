@@ -24,7 +24,7 @@ public class BoardService {
 		return boardDao.selectByPage(pager);
 	}
 	
-	public Board getBoard(int bno, boolean hit) {
+	public Board getBoard(int bno) {
 		log.info("실행");
 		return boardDao.selectByBno(bno);
 	}
@@ -34,19 +34,19 @@ public class BoardService {
 		return boardDao.count();
 	}
 	
-	public void writeBoard(Board board) {
+	public int insertBoard(Board board) {
 		log.info("실행");
-		boardDao.insert(board);
+		return boardDao.insert(board);
 	}
 	
-	public void updateBoard(Board board) {
+	public int updateBoard(Board board) {
 		log.info("실행");
-		boardDao.update(board);
+		return boardDao.update(board);
 	}
 	
-	public void removeBoard(int bno) {
+	public int deleteBoard(int bno) {
 		log.info("실행");
-		boardDao.deleteByBno(bno);
+		return boardDao.deleteByBno(bno);
 	}
 }
 

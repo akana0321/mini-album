@@ -5,4 +5,5 @@ import lombok.Data;
 @Data
 public class Category {
   private String cname;
+  private String oldCname;
 }

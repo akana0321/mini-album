@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.mycompany.mini-album.dao.MemberDao">
-	<insert id="insert" parameterType="member">
-		INSERT INTO member 
-		(mid, mname, mpassword, menabled, mrole, memail) 
-		VALUES(#{mid}, #{mname}, #{mpassword}, #{menabled}, #{mrole}, #{memail})
+<mapper namespace="com.mycompany.mini_album.dao.CategoryDao">
+	<select id="selectAll" resultType="category">
+		SELECT cname FROM category
+	</select>
+	
+	<insert id="insert" parameterType="string">
+		INSERT INTO category (cname) VALUES (#{cname})
 	</insert>
 	
-	<select id="selectByMid" parameterType="string" resultType="member">
-		SELECT mid, mname, mpassword, menabled, mrole, memail
-		FROM member
-		WHERE mid=#{mid}
-	</select>
+	<delete id="delete" parameterType="string">
+		DELETE FROM category WHERE cname=#{cname}
+	</delete>
+	
+	<update id="update" parameterType="category">
+		UPDATE category SET cname=#{cname} WHERE cname=#{oldCname}
+	</update>
 </mapper> 

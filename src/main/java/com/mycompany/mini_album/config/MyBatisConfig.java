@@ -15,7 +15,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Configuration
 @Log4j2
-@MapperScan(basePackages = {"com.mycompany.backend.dao"})
+@MapperScan(basePackages = {"com.mycompany.mini_album.dao"})
 public class MyBatisConfig {
 	@Resource
 	private DataSource dataSource;

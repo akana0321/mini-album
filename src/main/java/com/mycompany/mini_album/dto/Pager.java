@@ -4,6 +4,9 @@ import lombok.Data;
 
 @Data
 public class Pager {
+  private String mid;       // 게시물 정보를 가져올 사용자
+  private String cname;     // 게시물 정보를 가져올 사용자와 카테고리
+  
 	private int totalRows;		//전체 행수
 	private int totalPageNo;	//전체 페이지 수
 	private int totalGroupNo;	//전체 그룹 수
