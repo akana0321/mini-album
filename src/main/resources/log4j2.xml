@@ -7,7 +7,7 @@
   </Appenders>
   
   <Loggers>
-    <Logger name="com.mycompany.backend" level="info" additivity="false">
+    <Logger name="com.mycompany.mini_album" level="info" additivity="false">
       <AppenderRef ref="Out"/>
     </Logger>
     <!-- SQL문을 로깅 -->
