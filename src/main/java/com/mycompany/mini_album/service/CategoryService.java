@@ -19,11 +19,11 @@ public class CategoryService {
   public CategoryDao categoryDao;
   
   public List<Category> selectAll() {
-    return categoryDao.selectAll();
+    return categoryDao.selectAllByMid();
   }
   
-  public int insertCategory(String cname) {
-    return categoryDao.insert(cname);
+  public int insertCategory(Category category) {
+    return categoryDao.insert(category);
   }
   
   public int updateCategory(Category category) {
