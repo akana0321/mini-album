@@ -18,12 +18,12 @@ public class CategoryService {
   @Resource
   public CategoryDao categoryDao;
   
-  public List<Category> selectAll() {
-    return categoryDao.selectAll();
+  public List<Category> selectAll(String mid) {
+    return categoryDao.selectAllByMid(mid);
   }
   
-  public int insertCategory(String cname) {
-    return categoryDao.insert(cname);
+  public int insertCategory(Category category) {
+    return categoryDao.insert(category);
   }
   
   public int updateCategory(Category category) {

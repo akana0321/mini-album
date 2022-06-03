@@ -36,7 +36,8 @@ public class BoardService {
 	
 	public int insertBoard(Board board) {
 		log.info("실행");
-		return boardDao.insert(board);
+		boardDao.insert(board);
+		return board.getBno();
 	}
 	
 	public int updateBoard(Board board) {
