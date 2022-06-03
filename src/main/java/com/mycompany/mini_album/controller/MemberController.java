@@ -42,13 +42,13 @@ public class MemberController {
   private PasswordEncoder passwordEncoder;
   
   @Resource
-  CategoryService categoryService;
+  private CategoryService categoryService;
   
   @Resource
-  ImagesService imagesService;
+  private ImagesService imagesService;
   
   @Resource
-  BoardService boardService;
+  private BoardService boardService;
   
   @Resource
   private RedisTemplate<String, String> redisTemplate;
