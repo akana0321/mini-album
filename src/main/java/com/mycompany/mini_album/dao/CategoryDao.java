@@ -9,7 +9,7 @@ import com.mycompany.mini_album.dto.Category;
 
 @Mapper
 public interface CategoryDao {
-  public List<Category> selectAll();
+  public List<Category> selectAllByMid(String mid);
   public int insert(Category category);
   public int delete(String cname);
   public int update(Category category);
