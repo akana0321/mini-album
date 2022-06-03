@@ -22,8 +22,8 @@ public class CategoryService {
     return categoryDao.selectAll();
   }
   
-  public int insertCategory(String cname) {
-    return categoryDao.insert(cname);
+  public int insertCategory(Category category) {
+    return categoryDao.insert(category);
   }
   
   public int updateCategory(Category category) {
