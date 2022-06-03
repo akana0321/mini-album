@@ -121,6 +121,7 @@ public class Jwt {
   //요청 authorization 헤더 값에서 AccessToken 얻기
   //Bearer xxxxxxxxxxxxx.xxxxxxxxxxxx.xxxxxxxxxxxx
   public static String getAccessToken(String authorization) {
+	  log.info("실행");
     String accessToken = null;
     if(authorization != null && authorization.startsWith("Bearer ")) {
       accessToken = authorization.substring(7);
