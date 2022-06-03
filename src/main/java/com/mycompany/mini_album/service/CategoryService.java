@@ -18,8 +18,8 @@ public class CategoryService {
   @Resource
   public CategoryDao categoryDao;
   
-  public List<Category> selectAll() {
-    return categoryDao.selectAllByMid();
+  public List<Category> selectAll(String mid) {
+    return categoryDao.selectAllByMid(mid);
   }
   
   public int insertCategory(Category category) {

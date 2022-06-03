@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.mycompany.mini_album.dao.CategoryDao">
-	<select id="selectAllByMid" parameterType="category" resultType="category">
+	<select id="selectAllByMid" parameterType="string" resultType="category">
 		SELECT cname FROM category WHERE mid=#{mid}
 	</select>
 	
