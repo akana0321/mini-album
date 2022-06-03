@@ -31,7 +31,12 @@ public class ImagesService {
   
   // 이미지(들) 추가하기
   public int insertImages(List<Images> images) {
-    return imagesDao.insert(images);
+    int result = 0;
+    for(int i=0; i<images.size(); i++) {
+      imagesDao.insert(images.get(i));
+      result += 1;
+    }
+    return result;
   }
   
   // 게시물과 연관된 모든 이미지 지우기
