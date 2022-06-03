@@ -112,6 +112,7 @@ public class Jwt {
    } catch(Exception e) {
      log.error(e.getMessage());
    }
+   log.info(result);
    return result;
  }
  
