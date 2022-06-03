@@ -1,19 +1,33 @@
 package com.mycompany.mini_album.controller;
 
-import java.util.List;
+import java.util.Date;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 
+import org.json.JSONObject;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mycompany.mini_album.dto.Board;
-import com.mycompany.mini_album.dto.Pager;
+import com.mycompany.mini_album.dto.Member;
+import com.mycompany.mini_album.security.Jwt;
 import com.mycompany.mini_album.service.BoardService;
 import com.mycompany.mini_album.service.CategoryService;
 import com.mycompany.mini_album.service.ImagesService;
 import com.mycompany.mini_album.service.MemberService;
+import com.mycompany.mini_album.service.MemberService.LoginResult;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -25,6 +39,9 @@ public class MemberController {
   MemberService memberService;
   
   @Resource
+  private PasswordEncoder passwordEncoder;
+  
+  @Resource
   CategoryService categoryService;
   
   @Resource
@@ -33,17 +50,148 @@ public class MemberController {
   @Resource
   BoardService boardService;
   
-  @RequestMapping("/home")
-  @ResponseBody
-  public String home() {
-    int totalRows = boardService.getTotalBoardNum();
-    Pager pager = new Pager(5, 5, totalRows, 1);
-    pager.setMid("userid01");
-    List<Board> boards = boardService.getBoards(pager);
-    System.out.println(boards.size());
-    for(int i=0; i<boards.size(); i++) {
-      log.info(boards.get(i));
+  @Resource
+  private RedisTemplate<String, String> redisTemplate;
+  
+  @PostMapping("/login")
+  public ResponseEntity<String> login(@RequestBody Member member){
+    log.info("실행");
+    
+    //mid와 mpassword가 없을 경우
+    if(member.getMid() == null || member.getMpassword() == null) {
+      return ResponseEntity
+          .status(401)
+          .body("mid or mpassword cannot be null");
     }
-    return "real??";
+    
+    //로그인 결과 얻기
+    LoginResult loginResult = memberService.login(member);
+    
+    if(loginResult != LoginResult.SUCCESS) {
+      return ResponseEntity
+          .status(401)
+          .body("mid or mpassword is wrong");
+    }
+    
+    Member dbMember = memberService.getMember(member.getMid());
+    
+    String accessToken = Jwt.createAccessToken(member.getMid(), dbMember.getMrole());
+    String refreshToken = Jwt.createRefreshToken(member.getMid(), dbMember.getMrole());
+    
+    //Redis에 저장
+    ValueOperations<String, String> vo = redisTemplate.opsForValue();
+    vo.set(accessToken, refreshToken,Jwt.REFRESH_TOKEN_DURATION,TimeUnit.MILLISECONDS);
+    
+    //쿠키 생성
+    String refreshTokenCookie =  ResponseCookie.from("refreshToken", refreshToken)
+                                               .httpOnly(true)
+                                               .secure(false)// Http or Https
+                                               .path("/")
+                                               .maxAge(Jwt.REFRESH_TOKEN_DURATION/1000)
+                                               .domain("localhost")
+                                               .build()
+                                               .toString();
+    //본문 생성
+    String json = new JSONObject()
+                      .put("accessToken", accessToken)
+                      .put("mid",member.getMid())
+                      .toString();
+    
+    //응답 설정
+    return ResponseEntity
+            //응답 상태 코드: 200
+            .ok()
+            //응답 헤더 추가
+            .header(HttpHeaders.SET_COOKIE, refreshTokenCookie)
+            .header(HttpHeaders.CONTENT_TYPE, "application/json")
+            //응답 바디 추가
+            .body(json);
   }
+  
+  @GetMapping("/refreshToken")
+  public ResponseEntity<String> refreshToken(
+      @RequestHeader("Authorization") String authorization,
+      @CookieValue("refreshToken") String refreshToken){
+    //accessToken 얻기
+    String accessToken = Jwt.getAccessToken(authorization);
+    
+    if(accessToken == null) {
+      return ResponseEntity.status(401).body("no access token");
+    }
+    
+    //RefreshToken 여부
+    if(refreshToken == null) {
+      return ResponseEntity.status(401).body("no refresh token");
+    }
+    
+    //동일한 토큰이지 확인
+    ValueOperations<String, String> vo = redisTemplate.opsForValue();
+    String redisRefreshToken = vo.get(accessToken);
+    if(redisRefreshToken == null) {
+      return ResponseEntity.status(401).body("Invalidate access token"); 
+    }
+    if(!refreshToken.equals(redisRefreshToken)) {
+      return ResponseEntity.status(401).body("Invalidate refresh token"); 
+    }
+    /*if(Jwt.validateToken(refreshToken)) {
+      return ResponseEntity.status(401).body("Invalidate refresh token"); 
+    }*/
+    
+    //새로운 AccessToken 생성
+    Map<String,String> userInfo = Jwt.getUserInfo(refreshToken);
+    String mid = userInfo.get("mid");
+    String authority = userInfo.get("authority");
+    String newAccessToken = Jwt.createAccessToken(mid, authority);
+    
+    //Redis에 저장된 기존 정보를 삭제
+    redisTemplate.delete(accessToken);
+    
+    //Redis에 새로운 정보를 저장
+    
+    Date expiration = Jwt.getExpiration(refreshToken);
+    vo.set(newAccessToken,refreshToken,expiration.getTime() - new Date().getTime(), TimeUnit.MILLISECONDS);
+    
+    //응답 설정
+    String json = new JSONObject()
+                    .put("accessToken", newAccessToken)
+                    .put("mid", mid)
+                     .toString();
+    return ResponseEntity
+            .ok()
+            .header(HttpHeaders.CONTENT_TYPE, "application/json")
+            .body(json);
+  } 
+  
+  @GetMapping("/logout")
+  public ResponseEntity<String> logout(@RequestHeader("Authorization") String authorization){
+	  log.info("실행");
+    //AccessToken 얻기
+    String accessToken = Jwt.getAccessToken(authorization);
+    if(accessToken == null) {
+      return ResponseEntity.status(401).body("invalide access token");
+    }
+    
+    //Redis에 저장된 인증 정보 삭제
+    redisTemplate.delete(accessToken);
+    
+    //RefreshToken 쿠키 삭제
+    String refreshTokenCookie =  ResponseCookie.from("refreshToken", "")
+        .httpOnly(true)
+        .secure(false)// Http or Https
+        .path("/")
+        .maxAge(0)
+        .domain("localhost")
+        .build()
+        .toString();
+    
+    //응답 설정
+    return ResponseEntity
+            .ok()
+            .header(HttpHeaders.SET_COOKIE, refreshTokenCookie)
+            .body("success");
+    
+  }
+  
+  
+  
 }
