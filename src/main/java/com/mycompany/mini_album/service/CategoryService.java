@@ -31,6 +31,7 @@ public class CategoryService {
   }
   
   public int deleteCategory(String cname) {
+	  System.out.println("딜리트 실행2222222 : " + cname);
     return categoryDao.delete(cname);
   }
 }
