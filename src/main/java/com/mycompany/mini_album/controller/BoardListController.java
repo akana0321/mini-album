@@ -84,6 +84,8 @@ public class BoardListController {
           .header(HttpHeaders.CONTENT_TYPE, image.getItype())
           .body(resource);
   }
+  
+  
 
 	@GetMapping("/readCategoryList")
 	public List<Category> readCategoryList(String mid){
