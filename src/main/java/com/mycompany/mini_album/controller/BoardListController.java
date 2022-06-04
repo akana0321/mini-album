@@ -1,34 +1,44 @@
 package com.mycompany.mini_album.controller;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mycompany.mini_album.dto.Board;
 import com.mycompany.mini_album.dto.Category;
+import com.mycompany.mini_album.dto.Images;
 import com.mycompany.mini_album.dto.Pager;
 import com.mycompany.mini_album.service.BoardService;
 import com.mycompany.mini_album.service.CategoryService;
+import com.mycompany.mini_album.service.ImagesService;
 
 import lombok.extern.log4j.Log4j2;
 
 @RestController
 @Log4j2
+@RequestMapping("/listboard")
 public class BoardListController {
 	
 	@Resource
@@ -36,6 +46,44 @@ public class BoardListController {
 	
 	@Resource
 	private BoardService boardService;
+	
+	@Resource
+	private ImagesService imagesService;
+	  
+  @GetMapping("/list")
+  public Map<String, Object> list(@RequestParam(defaultValue="basic") String category,
+                                  @RequestParam(defaultValue="1") int pageNo) {
+    log.info("실행");
+    int totalRows = boardService.getTotalBoardNum("user01");
+    Pager pager = new Pager(9, 4, totalRows, pageNo);
+    pager.setMid("user01");
+    List<Board> list =  boardService.getBoards(pager);
+    Map<String, Object> map = new HashMap<>();
+    map.put("boards", list);
+    map.put("pager", pager);  // Front에서도 페이징 처리를 하기 위해 제공
+    return map;
+  }
+  
+  @GetMapping("/list/image/{ino}")
+  public ResponseEntity<InputStreamResource> download(@PathVariable int ino) throws Exception {
+    Images image = imagesService.getImageOne(ino);
+    String ioname = image.getIoname();
+    
+    if(ioname == null) return null;
+    
+    // 파일 이름이 한글일 경우
+    ioname = new String(ioname.getBytes("UTF-8"),"ISO-8859-1");
+    
+    // 파일 입력 스트림
+    FileInputStream fis = new FileInputStream("C:/Temp/userAlbum/" + ioname);
+    InputStreamResource resource = new InputStreamResource(fis);
+    
+    // 응답 생성
+    return ResponseEntity.ok()
+          .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+ioname+"\";")
+          .header(HttpHeaders.CONTENT_TYPE, image.getItype())
+          .body(resource);
+  }
 
 	@GetMapping("/readCategoryList")
 	public List<Category> readCategoryList(String mid){

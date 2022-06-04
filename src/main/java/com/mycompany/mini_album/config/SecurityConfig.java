@@ -40,9 +40,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // 4. 사이트 간 요청 위조 방지 비활성화
     http.csrf().disable();
     // 5. 요청 경로 권한 설정 - /board/이하의 모든 경로는 인증된 사용자만 가능하고(로그인), 이외는 로그인 안해도 가능 
-    http.authorizeRequests()
+    /*http.authorizeRequests()
         .antMatchers("listboard/**").authenticated()
-        .antMatchers("/**").permitAll();
+        .antMatchers("/**").permitAll();*/
     // 6. CORS 설정(REST API면 반드시 설정 - 프론트와 REST API가 다른 도메인일 경우 접근 허용)
     // 다른 도메인의 자바 스크립트로 접근할 수 있도록 허용(MPA 방식에서는 할 필요 없음)
     http.cors();
