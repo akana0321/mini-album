@@ -42,12 +42,6 @@ public class MemberController {
   private PasswordEncoder passwordEncoder;
   
   @Resource
-  private CategoryService categoryService;
-  
-  @Resource
-  private ImagesService imagesService;
-  
-  @Resource
   private BoardService boardService;
   
   @Resource
