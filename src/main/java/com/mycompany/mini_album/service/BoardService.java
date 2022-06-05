@@ -25,14 +25,14 @@ public class BoardService {
 		return boardDao.selectByPage(pager);
 	}
 	
-	public Board getBoard(int bno) {
+		public Board getBoard(int bno) {
 		log.info("실행");
 		return boardDao.selectByBno(bno);
 	}
 	
-	public int getTotalBoardNum() {
+	public int getTotalBoardNum(String mid) {
 		log.info("실행");
-		return boardDao.count();
+		return boardDao.count(mid);
 	}
 	
 	public int insertBoard(Board board) {
@@ -47,7 +47,7 @@ public class BoardService {
 	}
 	
 	public int deleteBoard(int bno) {
-		log.info("실행");
+	  System.out.println("딜리트 실행222");
 		return boardDao.deleteByBno(bno);
 	}
 	

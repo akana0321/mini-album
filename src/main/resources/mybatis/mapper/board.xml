@@ -31,12 +31,13 @@
 		    FROM board b
             LEFT OUTER JOIN images i ON i.bno = b.bno
 		    WHERE b.mid = #{mid}
-		    ORDER BY bno DESC
+		    ORDER BY b.bno DESC
 		  )
 		  WHERE rownum &lt;= #{endRowNo}  
 		)
 		WHERE rnum &gt;= #{startRowNo}
 	</select>
+	
 	
 	<select id="selectByPageWithCategory" parameterType="pager" resultMap="boardWithImages">
 		SELECT rnum, bno, mid, cname, btitle, bcontent, bdate,
@@ -58,8 +59,8 @@
 		WHERE rnum &gt;= #{startRowNo}
 	</select>
 	
-	<select id="count" resultType="int">
-		SELECT count(*) FROM board
+	<select id="count" parameterType = "String" resultType="int">
+		SELECT count(*) FROM board where mid = #{mid} 
 	</select>
 	
 	<select id="selectByBno" parameterType="int" resultMap="boardWithImages">
