@@ -68,20 +68,20 @@ public class BoardListController {
   @GetMapping("/list/image/{ino}")
   public ResponseEntity<InputStreamResource> download(@PathVariable int ino) throws Exception {
     Images image = imagesService.getImageOne(ino);
-    String ioname = image.getIoname();
+    String isname = image.getIsname();
     
-    if(ioname == null) return null;
+    if(isname == null) return null;
     
     // 파일 이름이 한글일 경우
-    ioname = new String(ioname.getBytes("UTF-8"),"ISO-8859-1");
+    isname = new String(isname.getBytes("UTF-8"),"ISO-8859-1");
     
     // 파일 입력 스트림
-    FileInputStream fis = new FileInputStream("C:/Temp/userAlbum/" + ioname);
+    FileInputStream fis = new FileInputStream("C:/Temp/album/" + isname);
     InputStreamResource resource = new InputStreamResource(fis);
     
     // 응답 생성
     return ResponseEntity.ok()
-          .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+ioname+"\";")
+          .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+isname+"\";")
           .header(HttpHeaders.CONTENT_TYPE, image.getItype())
           .body(resource);
   }
