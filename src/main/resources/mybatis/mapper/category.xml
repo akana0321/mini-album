@@ -14,7 +14,7 @@
 		DELETE FROM category WHERE cname=#{cname}
 	</delete>
 	
-	<update id="update" parameterType="category">
+	<update id="update" parameterType="String">
 		UPDATE category SET cname=#{cname} WHERE cname=#{oldCname}
 	</update>
 </mapper> 

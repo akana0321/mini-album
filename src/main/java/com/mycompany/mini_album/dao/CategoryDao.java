@@ -12,6 +12,6 @@ public interface CategoryDao {
   public List<Category> selectAllByMid(String mid);
   public int insert(Category category);
   public int delete(String cname);
-  public int update(Category category);
+  public int update(String cname, String oldCname);
   
 }

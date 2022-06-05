@@ -125,13 +125,13 @@ public class BoardListController {
   @PostMapping("/insertNewCategoryName")
   public int insertNewCategoryName(@RequestBody Category category) {
     int result = categoryService.insertCategory(category);
-    
+    log.info("create Category 실행");
     return result;
   }
   
   
-  @DeleteMapping("/deleteCategory") 
-  public int deleteCategory(@RequestBody String cname) {
+  @DeleteMapping("/deleteCategory/{cname}") 
+  public int deleteCategory(@PathVariable String cname) {
     System.out.println("딜리트 실행 : " + cname);
     
     int result = categoryService.deleteCategory(cname);
@@ -139,9 +139,10 @@ public class BoardListController {
   }
   
   @PutMapping("/updateCategory")
-  public int updateCategory(@RequestBody Category category) {
-    System.out.println("업데이트 실행 : " + category);
-    int result = categoryService.updateCategory(category);
+  public int updateCategory(@RequestBody String cname, @RequestBody String oldCname) {
+    cname = "1주년 기념일";
+    oldCname = "기념일";
+    int result = categoryService.updateCategory(cname, oldCname);
     return result;
     
   }
