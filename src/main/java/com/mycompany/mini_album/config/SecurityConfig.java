@@ -51,7 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   }
   
   public JwtAuthenticationFilter jwtAuthenticationFilter() {
-	  log.info("실행");
+    log.info("실행");
     JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter();
     jwtAuthenticationFilter.setRedisTemplate(redisTemplate);
     return jwtAuthenticationFilter;
@@ -89,7 +89,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   
   @Bean
   public PasswordEncoder passwordEncoder() {
-	  log.info("실행");
+    log.info("실행");
     return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     // return new BCryptPasswordEncoder(); // 앞으로 암호는 무조건 BCrypt만 사용할 경우
   }

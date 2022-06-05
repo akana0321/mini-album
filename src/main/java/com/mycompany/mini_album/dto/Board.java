@@ -3,6 +3,8 @@ package com.mycompany.mini_album.dto;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.Data;
 
 @Data
