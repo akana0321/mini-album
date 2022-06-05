@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.mycompany.mini_album.dao.BoardDao;
 import com.mycompany.mini_album.dto.Board;
+import com.mycompany.mini_album.dto.Images;
 import com.mycompany.mini_album.dto.Pager;
 
 import lombok.extern.log4j.Log4j2;
@@ -49,6 +50,17 @@ public class BoardService {
 		log.info("실행");
 		return boardDao.deleteByBno(bno);
 	}
+	
+	 public int deleteImage(int ino) {
+	    log.info("실행");
+	    return boardDao.deleteByIno(ino);
+	  }
+
+  public int writeImage(Images images) {
+    log.info("실행");
+    return boardDao.insertImage(images);
+    
+  }
 }
 
 

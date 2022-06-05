@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.mycompany.mini_album.dto.Board;
+import com.mycompany.mini_album.dto.Images;
 import com.mycompany.mini_album.dto.Pager;
 
 @Mapper
@@ -16,4 +17,6 @@ public interface BoardDao {
   public int insert(Board board);
   public int deleteByBno(int bno);
   public int update(Board board); 
+  public int deleteByIno(int ino);
+  public int insertImage(Images images);
 }
