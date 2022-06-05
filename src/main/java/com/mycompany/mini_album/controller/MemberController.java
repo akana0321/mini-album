@@ -24,8 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mycompany.mini_album.dto.Member;
 import com.mycompany.mini_album.security.Jwt;
 import com.mycompany.mini_album.service.BoardService;
-import com.mycompany.mini_album.service.CategoryService;
-import com.mycompany.mini_album.service.ImagesService;
 import com.mycompany.mini_album.service.MemberService;
 import com.mycompany.mini_album.service.MemberService.LoginResult;
 
@@ -102,6 +100,7 @@ public class MemberController {
             .body(json);
   }
   
+  
   @GetMapping("/refreshToken")
   public ResponseEntity<String> refreshToken(
       @RequestHeader("Authorization") String authorization,
@@ -156,7 +155,12 @@ public class MemberController {
             .body(json);
   } 
   
-  @GetMapping("/logout")
+//  @GetMapping("/login")
+//  public void test() {
+//	  log.info("실행");
+//  }
+  
+  @GetMapping("/login")
   public ResponseEntity<String> logout(@RequestHeader("Authorization") String authorization){
     log.info("실행");
     //AccessToken 얻기
@@ -170,13 +174,13 @@ public class MemberController {
     
     //RefreshToken 쿠키 삭제
     String refreshTokenCookie =  ResponseCookie.from("refreshToken", "")
-        .httpOnly(true)
-        .secure(false)// Http or Https
-        .path("/")
-        .maxAge(0)
-        .domain("localhost")
-        .build()
-        .toString();
+            .httpOnly(true)
+            .secure(false)// Http or Https
+            .path("/")
+            .maxAge(0)
+            .domain("localhost")
+            .build()
+            .toString();
     
     //응답 설정
     return ResponseEntity
