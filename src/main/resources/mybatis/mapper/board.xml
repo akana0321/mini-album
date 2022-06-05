@@ -94,6 +94,20 @@
 			bdate=sysdate
 		WHERE bno=#{bno}
 	</update>
+	
+	<delete id="deleteByIno" parameterType="int">
+		DELETE FROM images WHERE ino=#{ino}
+	</delete>
+	
+	<insert id="insertImage" parameterType="images">
+		<selectKey order="BEFORE" resultType="int" keyProperty="ino">
+			SELECT SEQ_IMAGES_INO.nextval FROM dual
+		</selectKey>
+		INSERT INTO images 
+		(ino, bno, ioname, isname, itype)
+		VALUES
+		(#{ino}, #{bno}, #{ioname}, #{isname}, #{itype})
+	</insert>	
 </mapper>
 
 
