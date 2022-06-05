@@ -32,7 +32,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
     log.info("실행");
-    
     //요청 헤더로부터 Authorization 헤더 값 얻기
     String authorization = request.getHeader("Authorization");
     //AccessToken 추출
@@ -42,7 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     //Redis에 존재 여부 확인
       ValueOperations<String, String> vo = redisTemplate.opsForValue();
       String redisRefreshToken = vo.get(accessToken);
-      
+      log.info("실행1");
       if(redisRefreshToken != null) {
         Map<String,String> userInfo = Jwt.getUserInfo(accessToken);
         String mid = userInfo.get("mid");
@@ -57,7 +56,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       }
       
     }
-    log.info("ㅁㅁㅁㅁㅁㅁㅁㅁ");
     filterChain.doFilter(request, response);
   }
 
