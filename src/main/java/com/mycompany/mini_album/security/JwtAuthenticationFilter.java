@@ -41,7 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     //Redis에 존재 여부 확인
       ValueOperations<String, String> vo = redisTemplate.opsForValue();
       String redisRefreshToken = vo.get(accessToken);
-      
+      log.info("실행1");
       if(redisRefreshToken != null) {
         Map<String,String> userInfo = Jwt.getUserInfo(accessToken);
         String mid = userInfo.get("mid");
