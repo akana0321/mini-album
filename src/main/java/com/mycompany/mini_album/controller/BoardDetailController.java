@@ -100,30 +100,24 @@ public class BoardDetailController {
   }
   
   @PutMapping("/battach/{bno}")
-  public void updateImage(Images images) {
+  public void updateImage(Images image) {
     log.info("실행");
-    log.info(images);
+    log.info(image);
 
-//    if(images.getImgFile() != null && !images.getImgFile().isEmpty()) {
-//      for (Images image : board.getBimages()) {        
-//        MultipartFile mf = image.getImgFile();
-//        image.setIoname(mf.getOriginalFilename());
-//        image.setIsname(new Date().getTime() + "-" + mf.getOriginalFilename());
-//        image.setItype(mf.getContentType());
-//    
-//        try {
-//          File file = new File("C:/Temp/album/" + image.getIsname());
-//          mf.transferTo(file);
-//        } catch (Exception e) {
-//          log.error(e.getMessage());
-//        }
-//        
-//        boardService.writeImage(images);
-//      }
-//    }
-    
-//    boardService.updateBoard(board);
-//    Board dbBoard = boardService.getBoard(board.getBno());
-//    return dbBoard;
+    if(image.getImgFile() != null && !image.getImgFile().isEmpty()) {
+      MultipartFile mf = image.getImgFile();
+      image.setIoname(mf.getOriginalFilename());
+      image.setIsname(new Date().getTime() + "-" + mf.getOriginalFilename());
+      image.setItype(mf.getContentType());
+  
+        try {
+          File file = new File("C:/Temp/album/" + image.getIsname());
+          mf.transferTo(file);
+        } catch (Exception e) {
+          log.error(e.getMessage());
+        }
+        
+        boardService.writeImage(image);
+    }
   }
 }
