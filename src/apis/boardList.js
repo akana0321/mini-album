@@ -42,7 +42,72 @@ async function downloadBoardImages(ino) {
   return blob;
 }
 
+//게시물 추가
+async function createBoard(multipartFormData) {
+  let dbBoard = null;
+
+  try {
+    const response = await axios.post(`/listboard/write`, multipartFormData);
+    dbBoard = response.data;
+    console.log(response);
+
+  } catch(error) {
+    if(error.response) {
+      if(error.response.status === 403) {
+        if(await apiAuth.refreshToken()) {
+          const response = await axios.post(`/listboard/write`, multipartFormData);
+          dbBoard = response.data;
+        }
+      }
+    }
+  }
+  console.log(dbBoard);
+  return dbBoard;
+}
+
+//파일 추가
+async function createImage(dbBno, multipartFormDataImage) {
+  let dbImages = null;
+  try {
+    const response = await axios.post(`/listboard/write/${dbBno}`, multipartFormDataImage);
+    dbImages = response.data;
+
+  } catch(error) {
+    if(error.response) {
+      if(error.response.status === 403) {
+        if(await apiAuth.refreshToken()) {
+          const response = await axios.post(`/listboard/write/${dbBno}`, multipartFormDataImage);
+          dbImages = response.data;
+        }
+      }
+    }
+  }
+  return dbImages;
+}
+
+//카테고리 가져오기
+async function readCategory() {
+  let category = null;
+  try { 
+    const response = await axios.get(`/listboard/write`);
+    category = response.data;
+  } catch (error) {
+    if (error.response) {
+      if(error.response.status === 403) {
+        if (await apiAuth.refreshToken()) {
+          const response = await axios.get(`/listboard/write`);
+          category = response.data;
+        }
+      }
+    }
+  }
+  return category;
+}
+
 export default {
   getBoardList,
   downloadBoardImages,
+  createBoard, //게시물 추가
+  createImage, //파일 추가
+  readCategory, //카테고리 가져오기
 }

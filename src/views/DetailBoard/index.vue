@@ -38,7 +38,9 @@ import Image from "./Image.vue"
 import { useRoute, useRouter } from "vue-router";
 import apiBoard from "@/apis/board";
 import { ref } from "vue";
+
 import fileDownload from "js-file-download";
+
 const route = useRoute();
 const router = useRouter();
 const bno = route.query.bno;
@@ -46,6 +48,7 @@ const pageNo = route.query.pageNo;
 const ino = route.query.ino;
 const board = ref(null);
 const battach = ref(null);
+
 //게시물 가져오기
 async function getBoard() {
   apiBoard.readBoard(bno) 
@@ -54,6 +57,7 @@ async function getBoard() {
   });
 }
 getBoard();
+
 //파일 다운로드
 async function downloadBattach(ino, ioname) {
   const blob = await apiBoard.downloadBoardAttach(bno, ino);

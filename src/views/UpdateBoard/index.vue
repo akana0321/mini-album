@@ -18,7 +18,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-2 col-form-label">첨부그림</label>
+          <label class="col-sm-2 col-form-label">첨부 이미지</label>
           <div class="col-sm-10">
             <input type="file" class="form-control-file" ref="newBattach" @change="previewImg" multiple/>
           </div>
