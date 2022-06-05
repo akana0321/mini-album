@@ -154,11 +154,7 @@ public class MemberController {
             .header(HttpHeaders.CONTENT_TYPE, "application/json")
             .body(json);
   } 
-  
-//  @GetMapping("/login")
-//  public void test() {
-//	  log.info("실행");
-//  }
+
   
   @GetMapping("/login")
   public ResponseEntity<String> logout(@RequestHeader("Authorization") String authorization){
