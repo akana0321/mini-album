@@ -1,8 +1,6 @@
 package com.mycompany.mini_album.controller;
 
-import java.io.File;
 import java.io.FileInputStream;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,13 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.mycompany.mini_album.dto.Board;
-import com.mycompany.mini_album.dto.Images;
 import com.mycompany.mini_album.service.BoardService;
 
 import lombok.extern.log4j.Log4j2;
@@ -49,81 +44,22 @@ public class BoardDetailController {
     return map;
   }
   
-  @GetMapping("/battach/{bno}/{ino}")
-  public ResponseEntity<InputStreamResource> download(@PathVariable int bno, @PathVariable int ino) throws Exception {
+  /*@GetMapping("/battach/{bno}")
+  public ResponseEntity<InputStreamResource> download(@PathVariable int bno) throws Exception {
     Board board = boardService.getBoard(bno);
-    String battachoname = "";
-    String battachsname = "";
-    String battachtype = "";
-    
-    for(int i=0; i<board.getBimages().size(); i++) {
-      if (ino == board.getBimages().get(i).getIno()) {
-        battachoname = board.getBimages().get(i).getIoname();
-        battachsname = board.getBimages().get(i).getIsname();
-        battachtype = board.getBimages().get(i).getItype();
-        
-        if (battachoname == null) return null;
-        
-      }
-    }
+    String battachoname = board.getBattachoname();
+    if (battachoname == null) return null;
     
     //파일 이름이 한글일 경우에 설정
     battachoname = new String(battachoname.getBytes("UTF-8"),"ISO-8859-1");
     
     //파일 입력 스트림 생성
-    FileInputStream fis = new FileInputStream("C:/Temp/album/" + battachsname);
+    FileInputStream fis = new FileInputStream("C:/Temp/uploadfiles/" + board.getBattachsname());
     InputStreamResource resource = new InputStreamResource(fis);
     
     //응답 생성
     return ResponseEntity.ok()
         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + battachoname + "\";")
-        .header(HttpHeaders.CONTENT_TYPE, battachtype)
         .body(resource);
-  }
-  
-  @DeleteMapping("/battach/{bno}/{ino}")
-  public Map<String, String> deleteImage(@PathVariable int ino) {
-    boardService.deleteImage(ino);
-    Map<String, String> map = new HashMap<>();
-    map.put("result", "success");
-    return map;
-  }
-  
-  @PutMapping("/{bno}")
-  public Board update(Board board) {
-    log.info("실행");
-    log.info(board);
-    
-    boardService.updateBoard(board);
-    Board dbBoard = boardService.getBoard(board.getBno());
-    return dbBoard;
-  }
-  
-  @PutMapping("/battach/{bno}")
-  public void updateImage(Images images) {
-    log.info("실행");
-    log.info(images);
-
-//    if(images.getImgFile() != null && !images.getImgFile().isEmpty()) {
-//      for (Images image : board.getBimages()) {        
-//        MultipartFile mf = image.getImgFile();
-//        image.setIoname(mf.getOriginalFilename());
-//        image.setIsname(new Date().getTime() + "-" + mf.getOriginalFilename());
-//        image.setItype(mf.getContentType());
-//    
-//        try {
-//          File file = new File("C:/Temp/album/" + image.getIsname());
-//          mf.transferTo(file);
-//        } catch (Exception e) {
-//          log.error(e.getMessage());
-//        }
-//        
-//        boardService.writeImage(images);
-//      }
-//    }
-    
-//    boardService.updateBoard(board);
-//    Board dbBoard = boardService.getBoard(board.getBno());
-//    return dbBoard;
-  }
+  } */
 }
