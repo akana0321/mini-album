@@ -52,11 +52,12 @@ public class BoardListController {
 	  
   @GetMapping("/list")
   public Map<String, Object> list(@RequestParam(defaultValue="basic") String category,
-                                  @RequestParam(defaultValue="1") int pageNo) {
+                                  @RequestParam(defaultValue="1") int pageNo,
+                                  @RequestParam String mid) {
     log.info("실행");
-    int totalRows = boardService.getTotalBoardNum("user01");
+    int totalRows = boardService.getTotalBoardNum(mid);
     Pager pager = new Pager(9, 4, totalRows, pageNo);
-    pager.setMid("user01");
+    pager.setMid(mid);
     List<Board> list =  boardService.getBoards(pager);
     Map<String, Object> map = new HashMap<>();
     map.put("boards", list);
