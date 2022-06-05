@@ -3,7 +3,7 @@
 
 <mapper namespace="com.mycompany.mini_album.dao.CategoryDao">
 	<select id="selectAllByMid" parameterType="string" resultType="category">
-		SELECT cname FROM category WHERE mid=#{mid}
+		SELECT cname, mid FROM category WHERE mid=#{mid}
 	</select>
 	
 	<insert id="insert" parameterType="category">
