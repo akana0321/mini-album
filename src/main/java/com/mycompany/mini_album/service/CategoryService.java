@@ -26,8 +26,8 @@ public class CategoryService {
     return categoryDao.insert(category);
   }
   
-  public int updateCategory(Category category) {
-    return categoryDao.update(category);
+  public int updateCategory(String cname, String oldCname) {
+    return categoryDao.update(cname, oldCname);
   }
   
   public int deleteCategory(String cname) {
