@@ -63,7 +63,7 @@ public class MapperTestController {
     category.setMid("user01");*/
     
     List<Board> boardList = new ArrayList<>();
-    int totalRows = boardService.getTotalBoardNum("");
+    int totalRows = boardService.getTotalBoardNum("user01");
     Pager pager = new Pager(5, 5, totalRows, 1);
     pager.setMid("user01");
     Board board = boardService.getBoard(26);
