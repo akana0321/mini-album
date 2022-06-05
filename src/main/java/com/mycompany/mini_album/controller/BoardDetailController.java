@@ -106,17 +106,17 @@ public class BoardDetailController {
     Board board = boardService.getBoard(26);
 
     if(images.getImgFile() != null && !images.getImgFile().isEmpty()) {
-//      for (Images image : board.getBimages()) {        
-//        MultipartFile mf = image.getImgFile();
-//        image.setIoname(mf.getOriginalFilename());
-//        image.setIsname(new Date().getTime() + "-" + mf.getOriginalFilename());
-//        image.setItype(mf.getContentType());
-    
-       for(int i = 1; i<3; i++) {
-         MultipartFile mf = images.getImgFile();
-         images.setIoname(mf.getOriginalFilename());
-         images.setIsname(new Date().getTime() + "-" + mf.getOriginalFilename());
-         images.setItype(mf.getContentType());
+      for (Images image : board.getBimages()) {        
+        MultipartFile mf = image.getImgFile();
+        image.setIoname(mf.getOriginalFilename());
+        image.setIsname(new Date().getTime() + "-" + mf.getOriginalFilename());
+        image.setItype(mf.getContentType());
+//    
+//       for(int i = 1; i<3; i++) {
+//         MultipartFile mf = images.getImgFile();
+//         images.setIoname(mf.getOriginalFilename());
+//         images.setIsname(new Date().getTime() + "-" + mf.getOriginalFilename());
+//         images.setItype(mf.getContentType());
        
         try {
           File file = new File("C:/Temp/album/" + images.getIsname());
