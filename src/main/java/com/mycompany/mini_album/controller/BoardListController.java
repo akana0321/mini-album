@@ -88,7 +88,31 @@ public class BoardListController {
           .body(resource);
   }
   
-  
+  @PostMapping("/write")
+  public Board create(Board board) {
+    log.info("실행");
+    List<Images> imgList = new ArrayList<>();
+    if(board.getBimages() != null && !board.getBimages().isEmpty()) {
+      for(int i=0; i<board.getBimages().size(); i++) {
+        Images image = board.getBimages().get(i);
+        MultipartFile mf = image.getImgFile();
+        image.setIoname(mf.getOriginalFilename());
+        image.setIsname(new Date().getTime()+"-" +mf.getOriginalFilename());
+        image.setItype(mf.getContentType());
+        File file = new File("c:/Temp/uploadfiles/"+image.getIsname());
+        try {
+          mf.transferTo(file);
+        } catch (Exception e) {
+          log.error(e.getMessage());
+        }
+        imgList.add(image);
+      }
+    }
+    boardService.insertBoard(board);
+    imagesService.insertImages(imgList);
+    Board dbBoard = boardService.getBoard(board.getBno());
+    return dbBoard;
+  }
 
   @GetMapping("/readCategoryList")
   public List<Category> readCategoryList(String mid){
@@ -120,32 +144,6 @@ public class BoardListController {
     int result = categoryService.updateCategory(category);
     return result;
     
-  }
-  
-  @PostMapping("/write")
-  public Board create(Board board) {
-    log.info("실행");
-    List<Images> imgList = new ArrayList<>();
-    if(board.getBimages() != null && !board.getBimages().isEmpty()) {
-      for(int i=0; i<board.getBimages().size(); i++) {
-        Images image = board.getBimages().get(i);
-        MultipartFile mf = image.getImgFile();
-        image.setIoname(mf.getOriginalFilename());
-        image.setIsname(new Date().getTime()+"-" +mf.getOriginalFilename());
-        image.setItype(mf.getContentType());
-        File file = new File("c:/Temp/uploadfiles/"+image.getIsname());
-        try {
-          mf.transferTo(file);
-        } catch (Exception e) {
-          log.error(e.getMessage());
-        }
-        imgList.add(image);
-      }
-    }
-    boardService.insertBoard(board);
-    imagesService.insertImages(imgList);
-    Board dbBoard = boardService.getBoard(board.getBno());
-    return dbBoard;
   }
   
   //이미지 이름만 읽어온다면
