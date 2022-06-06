@@ -3,7 +3,7 @@
 
 <mapper namespace="com.mycompany.mini_album.dao.CategoryDao">
 	<select id="selectAllByMid" parameterType="string" resultType="category">
-		SELECT cname FROM category WHERE mid=#{mid}
+		SELECT cname, mid FROM category WHERE mid=#{mid}
 	</select>
 	
 	<insert id="insert" parameterType="category">
@@ -14,7 +14,7 @@
 		DELETE FROM category WHERE cname=#{cname}
 	</delete>
 	
-	<update id="update" parameterType="String">
-		UPDATE category SET cname=#{cname} WHERE cname=#{oldCname}
+	<update id="updateCategoryName" parameterType="category">
+		UPDATE category SET cname=#{cname} WHERE cname=#{oldcname}
 	</update>
 </mapper> 

@@ -88,32 +88,31 @@ public class BoardListController {
           .body(resource);
   }
   
-  @PostMapping("/write")
-  public Board create(Board board) {
-    log.info("실행");
-    List<Images> imgList = new ArrayList<>();
-    if(board.getBimages() != null && !board.getBimages().isEmpty()) {
-      for(int i=0; i<board.getBimages().size(); i++) {
-        Images image = board.getBimages().get(i);
-        MultipartFile mf = image.getImgFile();
-        image.setIoname(mf.getOriginalFilename());
-        image.setIsname(new Date().getTime()+"-" +mf.getOriginalFilename());
-        image.setItype(mf.getContentType());
-        File file = new File("c:/Temp/uploadfiles/"+image.getIsname());
-        try {
-          mf.transferTo(file);
-        } catch (Exception e) {
-          log.error(e.getMessage());
-        }
-        imgList.add(image);
-      }
-    }
-    boardService.insertBoard(board);
-    imagesService.insertImages(imgList);
-    Board dbBoard = boardService.getBoard(board.getBno());
-    log.info(dbBoard);
-    return dbBoard;
-  }
+//  @PostMapping("/write")
+//  public Board create(Board board) {
+//    log.info("실행");
+//    List<Images> imgList = new ArrayList<>();
+//    if(board.getBimages() != null && !board.getBimages().isEmpty()) {
+//      for(int i=0; i<board.getBimages().size(); i++) {
+//        Images image = board.getBimages().get(i);
+//        MultipartFile mf = image.getImgFile();
+//        image.setIoname(mf.getOriginalFilename());
+//        image.setIsname(new Date().getTime()+"-" +mf.getOriginalFilename());
+//        image.setItype(mf.getContentType());
+//        File file = new File("c:/Temp/uploadfiles/"+image.getIsname());
+//        try {
+//          mf.transferTo(file);
+//        } catch (Exception e) {
+//          log.error(e.getMessage());
+//        }
+//        imgList.add(image);
+//      }
+//    }
+//    boardService.insertBoard(board);
+//    imagesService.insertImages(imgList);
+//    Board dbBoard = boardService.getBoard(board.getBno());
+//    return dbBoard;
+//  }
 
   @GetMapping("/readCategoryList")
   public List<Category> readCategoryList(String mid){
@@ -139,11 +138,11 @@ public class BoardListController {
     return result;
   }
   
-  @PutMapping("/updateCategory")
-  public int updateCategory(@RequestBody String cname, @RequestBody String oldCname) {
-    cname = "1주년 기념일";
-    oldCname = "기념일";
-    int result = categoryService.updateCategory(cname, oldCname);
+  @PostMapping("/updateCategory")
+  public int updateCategory(@RequestBody Category category) {
+	log.info("카테고리 수정 실행");
+	log.info(category);
+    int result = categoryService.updateCategory(category);
     return result;
     
   }
@@ -218,14 +217,11 @@ public class BoardListController {
       
         File file = new File("C:/Temp/mypage/"+ fileName);
         ResponseEntity<byte[]> result = null;
-
         try {
-
            HttpHeaders header = new HttpHeaders();
            header.add("Content-type", Files.probeContentType(file.toPath()));
            result = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), header, HttpStatus.OK);
            
-
         } catch (IOException e) {
            e.printStackTrace();
         }
@@ -236,4 +232,44 @@ public class BoardListController {
    * 
    * 
    */
+  
+  @GetMapping("/write")
+  public List<Category> getCategory() {
+    log.info("실행");
+    List<Category> dbCategory = categoryService.selectAll("user01");
+    log.info(dbCategory);
+    return dbCategory;
+  }
+  
+  @PostMapping("/write")
+  public int create(Board board) {
+    log.info("실행");
+    log.info(board);
+    
+    int bno = boardService.insertBoard(board);
+    return bno;
+  }
+  
+  @PostMapping("/write/{bno}")
+  public void updateImage(Images image) {
+    log.info("실행");
+    log.info(image);
+
+    if(image.getImgFile() != null && !image.getImgFile().isEmpty()) {
+      MultipartFile mf = image.getImgFile();
+      image.setIoname(mf.getOriginalFilename());
+      image.setIsname(new Date().getTime() + "-" + mf.getOriginalFilename());
+      image.setItype(mf.getContentType());
+  
+        try {
+          File file = new File("C:/Temp/album/" + image.getIsname());
+          mf.transferTo(file);
+        } catch (Exception e) {
+          log.error(e.getMessage());
+        }
+        
+        boardService.writeImage(image);
+    }
+  }
+  
 }

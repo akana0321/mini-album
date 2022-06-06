@@ -70,6 +70,7 @@
 		LEFT OUTER JOIN images i ON i.bno = b.bno
 		WHERE b.bno=#{bno}
 		  AND b.bno = i.bno
+		ORDER BY i.ino
 	</select>
 	
 	<insert id="insert" parameterType="board">

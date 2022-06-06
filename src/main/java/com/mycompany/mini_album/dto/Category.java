@@ -6,5 +6,5 @@ import lombok.Data;
 public class Category {
   private String cname;
   private String mid;
-  private String oldCname;
+  private String oldcname;
 }
