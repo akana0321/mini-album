@@ -138,11 +138,11 @@ public class BoardListController {
     return result;
   }
   
-  @PutMapping("/updateCategory")
-  public int updateCategory(@RequestBody String cname, @RequestBody String oldCname) {
-    cname = "1주년 기념일";
-    oldCname = "기념일";
-    int result = categoryService.updateCategory(cname, oldCname);
+  @PostMapping("/updateCategory")
+  public int updateCategory(@RequestBody Category category) {
+	log.info("카테고리 수정 실행");
+	log.info(category);
+    int result = categoryService.updateCategory(category);
     return result;
     
   }
