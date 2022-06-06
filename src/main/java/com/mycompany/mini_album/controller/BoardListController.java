@@ -111,6 +111,7 @@ public class BoardListController {
     boardService.insertBoard(board);
     imagesService.insertImages(imgList);
     Board dbBoard = boardService.getBoard(board.getBno());
+    log.info(dbBoard);
     return dbBoard;
   }
 
