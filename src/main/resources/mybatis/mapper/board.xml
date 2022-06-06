@@ -29,7 +29,12 @@
 		    SELECT b.bno, mid, cname, btitle, bcontent, bdate,
 			   	   ino, ioname, isname, itype
 		    FROM board b
-            LEFT OUTER JOIN images i ON i.bno = b.bno
+            LEFT OUTER JOIN (
+		        SELECT * FROM (
+		            SELECT ROW_NUMBER() OVER(PARTITION BY images.bno ORDER BY images.ino
+		        ) AS rwnum, images.* FROM images) imgs
+		        WHERE rwnum = 1
+		    ) i on i.bno = b.bno
 		    WHERE b.mid = #{mid}
 		    ORDER BY b.bno DESC
 		  )
@@ -49,7 +54,12 @@
 		    SELECT b.bno, mid, cname, btitle, bcontent, bdate,
 			   	   ino, ioname, isname, itype
 		    FROM board b
-            LEFT OUTER JOIN images i ON i.bno = b.bno
+            LEFT OUTER JOIN (
+		       SELECT * FROM (
+		           SELECT ROW_NUMBER() OVER(PARTITION BY images.bno ORDER BY images.ino
+		       ) AS rwnum, images.* FROM images) imgs
+		       WHERE rwnum = 1
+		   ) i on i.bno = b.bno
 		    WHERE b.mid = #{mid}
 		      AND b.cname = #{cname}
 		    ORDER BY bno DESC
