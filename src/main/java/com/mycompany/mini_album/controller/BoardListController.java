@@ -58,9 +58,13 @@ public class BoardListController {
                                   @RequestParam String mid) {
     log.info("실행");
     int totalRows = boardService.getTotalBoardNum(mid);
-    Pager pager = new Pager(9, 4, totalRows, pageNo);
+    Pager pager = new Pager(6, 4, totalRows, pageNo);
     pager.setMid(mid);
+    pager.setCname(category);
     List<Board> list =  boardService.getBoards(pager);
+    log.info("pager로 가져온 list의 사이즈: "+list.size());
+    log.info("startRowNo: " + pager.getStartRowNo());
+    log.info("endRowNo: " + pager.getEndRowNo());
     Map<String, Object> map = new HashMap<>();
     map.put("boards", list);
     map.put("pager", pager);  // Front에서도 페이징 처리를 하기 위해 제공

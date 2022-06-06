@@ -21,8 +21,12 @@ public class BoardService {
 	private BoardDao boardDao;
 	
 	public List<Board> getBoards(Pager pager) {
-		log.info("실행");
-		return boardDao.selectByPage(pager);
+		if(pager.getCname().equals("undefined") || pager.getCname().equals("") ||
+		    pager.getCname().equals("basic") || pager.getCname() == null) {
+		  return boardDao.selectByPage(pager);
+		} else {
+		  return boardDao.selectByPage(pager);
+		}
 	}
 	
 		public Board getBoard(int bno) {
