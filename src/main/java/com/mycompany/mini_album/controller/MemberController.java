@@ -154,14 +154,40 @@ public class MemberController {
             .header(HttpHeaders.CONTENT_TYPE, "application/json")
             .body(json);
   } 
-  
-//  @GetMapping("/login")
-//  public void test() {
-//	  log.info("실행");
-//  }
+
   
   @GetMapping("/login")
   public ResponseEntity<String> logout(@RequestHeader("Authorization") String authorization){
+    log.info("실행");
+    //AccessToken 얻기
+    String accessToken = Jwt.getAccessToken(authorization);
+    if(accessToken == null) {
+      return ResponseEntity.status(401).body("invalide access token");
+    }
+    
+    //Redis에 저장된 인증 정보 삭제
+    redisTemplate.delete(accessToken);
+    
+    //RefreshToken 쿠키 삭제
+    String refreshTokenCookie =  ResponseCookie.from("refreshToken", "")
+            .httpOnly(true)
+            .secure(false)// Http or Https
+            .path("/")
+            .maxAge(0)
+            .domain("localhost")
+            .build()
+            .toString();
+    
+    //응답 설정
+    return ResponseEntity
+            .ok()
+            .header(HttpHeaders.SET_COOKIE, refreshTokenCookie)
+            .body("success");
+    
+  }
+  
+  @GetMapping("/logout")
+  public ResponseEntity<String> logout2(@RequestHeader("Authorization") String authorization){
     log.info("실행");
     //AccessToken 얻기
     String accessToken = Jwt.getAccessToken(authorization);
