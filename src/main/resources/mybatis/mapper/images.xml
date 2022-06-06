@@ -6,6 +6,7 @@
 		SELECT ino, bno, ioname, isname, itype
 		FROM images
 		WHERE bno=#{bno}
+		ORDER BY ino
 	</select>
 	
 	<select id="selectOneByIno" parameterType="int" resultType="images">
