@@ -30,11 +30,11 @@
 			   	   ino, ioname, isname, itype
 		    FROM board b
             LEFT OUTER JOIN (
-                select * from (
-                    select row_number() over(partition by images.bno order By images.ino
-                ) as rwnum, images.* from images) imgs
-                where rwnum = 1
-            ) i on i.bno = b.bno
+		        SELECT * FROM (
+		            SELECT ROW_NUMBER() OVER(PARTITION BY images.bno ORDER BY images.ino
+		        ) AS rwnum, images.* FROM images) imgs
+		        WHERE rwnum = 1
+		    ) i on i.bno = b.bno
 		    WHERE b.mid = #{mid}
 		    ORDER BY b.bno DESC
 		  )
@@ -55,11 +55,11 @@
 			   	   ino, ioname, isname, itype
 		    FROM board b
             LEFT OUTER JOIN (
-                select * from (
-                    select row_number() over(partition by images.bno order By images.ino
-                ) as rwnum, images.* from images) imgs
-                where rwnum = 1
-            ) i on i.bno = b.bno
+		       SELECT * FROM (
+		           SELECT ROW_NUMBER() OVER(PARTITION BY images.bno ORDER BY images.ino
+		       ) AS rwnum, images.* FROM images) imgs
+		       WHERE rwnum = 1
+		   ) i on i.bno = b.bno
 		    WHERE b.mid = #{mid}
 		      AND b.cname = #{cname}
 		    ORDER BY bno DESC
